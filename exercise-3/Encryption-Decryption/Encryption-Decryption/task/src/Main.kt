@@ -3,10 +3,8 @@ package encryptdecrypt
 fun main() {
     var plaintext = "we found a treasure!";
     var ciphertext = "";
-
     for(ch in plaintext)
     {
-//         var ch = Char = ciphertext[i];
         var value = ch.code;
 
         if(value >= 97 && value <= 122)
@@ -21,7 +19,7 @@ fun main() {
             ciphertext += ch;
         }
     }
-
+    
     println(ciphertext);
 
 
