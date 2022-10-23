@@ -1,26 +1,27 @@
 package encryptdecrypt
 
 fun main() {
-    var plaintext = "we found a treasure!";
+
+    var plaintext = readln();
+    var key = readln().toInt();
+
     var ciphertext = "";
-    for(ch in plaintext)
+    for(i in 0 until plaintext.length)
     {
-        var value = ch.code;
+        var current_value = plaintext[i].code - 97;
 
-        if(value >= 97 && value <= 122)
-        {
-            value -= 97;
+        if(!(current_value >= 0 && current_value <= 25)){
+            ciphertext += plaintext[i];
+            continue;
+        }
 
-            var result = 122 - value;
-            ciphertext += result.toChar();
-        }
-        else
-        {
-            ciphertext += ch;
-        }
+        current_value = (current_value + key) % 26;
+
+        ciphertext += ((97 + current_value).toChar());
+
     }
-    
-    println(ciphertext);
+
+    println(ciphertext)
 
 
 }
