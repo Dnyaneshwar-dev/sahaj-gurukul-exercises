@@ -1,29 +1,105 @@
 package encryptdecrypt
 import java.io.File
-fun encrypt(plaintext: String, key: Int): String {
+fun encryptUnicode(plaintext: String, key: Int): String {
     var ciphertext = "";
     for(i in 0 until plaintext.length)
     {
-        var current_value = plaintext[i].code - 97;
+        var currentValue = plaintext[i].code - 97;
 
-        current_value = (current_value + key);
+        currentValue = (currentValue + key);
 
-        ciphertext += ((97 + current_value).toChar());
+        ciphertext += ((97 + currentValue).toChar());
     }
     return ciphertext;
 }
 
-fun decrypt(ciphertext: String, key: Int): String {
+fun decryptUnicode(ciphertext: String, key: Int): String {
     var plaintext = "";
     for(i in 0 until ciphertext.length)
     {
-        var current_value = ciphertext[i].code - 97;
+        var currentValue = ciphertext[i].code - 97;
 
-        current_value = (current_value - key);
+        currentValue = (currentValue - key);
 
-        plaintext += ((97 + current_value).toChar());
+        plaintext += ((97 + currentValue).toChar());
     }
     return plaintext;
+}
+
+fun shiftEncrypt(plaintext: String, key: Int): String {
+
+    var shiftedText = "";
+
+    for(i in 0 until plaintext.length){
+        var ch = plaintext[i];
+        var currentCode = ch.code
+
+        if(currentCode >= 97 && currentCode  <= 122)
+        {
+            currentCode -= 97
+            currentCode += key
+            currentCode %= 26
+            currentCode += 97
+
+            shiftedText += currentCode.toChar();
+        }
+        else if(currentCode >= 65 && currentCode <= 90){
+
+            currentCode -= 65
+            currentCode += key
+            currentCode %= 26
+            currentCode += 65
+
+            shiftedText += currentCode.toChar();
+
+            shiftedText += currentCode.toChar();
+        }
+        else
+        {
+            shiftedText += ch;
+        }
+    }
+
+    return shiftedText
+}
+
+fun shiftDecrypt(ciphertext: String, key: Int): String {
+
+    var shiftedText = "";
+
+    for(i in 0 until ciphertext.length){
+        var ch = ciphertext[i];
+        var currentCode = ch.code
+
+        if(currentCode >= 97 && currentCode  <= 122)
+        {
+            currentCode -= 97
+            currentCode -= key
+            currentCode += 26
+            currentCode %= 26
+            currentCode += 97
+
+            shiftedText += currentCode.toChar();
+        }
+        else if(currentCode >= 65 && currentCode <= 90){
+
+            currentCode -= 65
+            currentCode -= key
+            currentCode += 26
+            currentCode %= 26
+            currentCode += 65
+
+            shiftedText += currentCode.toChar();
+
+            shiftedText += currentCode.toChar();
+        }
+        else
+        {
+            shiftedText += ch;
+        }
+    }
+
+    return shiftedText
 }
 
 fun main(args: Array<String>) {
@@ -32,6 +108,7 @@ fun main(args: Array<String>) {
     var data = "";
     var inFilePath = "";
     var outFilePath = "";
+    var algorithm = "shift";
 
 
 
@@ -57,6 +134,9 @@ fun main(args: Array<String>) {
             "-out" -> {
                 outFilePath = nextData;
             }
+            "-alg" ->{
+                algorithm = nextData;
+            }
         }
     }
 
@@ -73,7 +153,10 @@ fun main(args: Array<String>) {
             plaintext = data;
         }
 
-        ciphertext = encrypt(plaintext,key);
+        if(algorithm == "unicode")
+            ciphertext = encryptUnicode(plaintext,key);
+        else
+            ciphertext = shiftEncrypt(plaintext,key)
 
         if(outFilePath != ""){
             File(outFilePath).writeText(ciphertext);
@@ -96,8 +179,10 @@ fun main(args: Array<String>) {
         {
             ciphertext = data;
         }
-
-        plaintext = decrypt(ciphertext,key);
+        if(algorithm == "unicode")
+            plaintext = decryptUnicode(ciphertext,key);
+        else
+            plaintext = shiftDecrypt(ciphertext,key)
 
         if(outFilePath != ""){
             File(outFilePath).writeText(plaintext);
