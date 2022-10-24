@@ -26,20 +26,35 @@ fun decrypt(ciphertext: String, key: Int): String {
     return plaintext;
 }
 
-fun main() {
+fun main(args: Array<String>) {
+    var mode = "enc";
+    var key = 0;
+    var data = "";
 
-    var operation = readln();
+    for(i in 0 until args.size step 2)
+    {
+        var operation = args[i];
+        var nextData = args[i+1];
 
-    var text = readln();
+        when(operation){
+            "-mode" -> {
+                mode = nextData;
+            }
+            "-key" ->{
+              key = nextData.toInt();
+            }
+            "-data" ->{
+                data = nextData;
+            }
+        }
 
-    var key = readln().toInt();
+    }
 
-    if(operation == "enc"){
-        println(encrypt(text,key));
+    if(mode == "enc"){
+        println(encrypt(data,key));
     }
     else
     {
-        println(decrypt(text,key));
+        println(decrypt(data,key));
     }
-
 }
