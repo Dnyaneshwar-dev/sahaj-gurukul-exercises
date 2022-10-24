@@ -1,5 +1,5 @@
 package encryptdecrypt
-
+import java.io.File
 fun encrypt(plaintext: String, key: Int): String {
     var ciphertext = "";
     for(i in 0 until plaintext.length)
@@ -30,6 +30,10 @@ fun main(args: Array<String>) {
     var mode = "enc";
     var key = 0;
     var data = "";
+    var inFilePath = "";
+    var outFilePath = "";
+
+
 
     for(i in 0 until args.size step 2)
     {
@@ -46,15 +50,61 @@ fun main(args: Array<String>) {
             "-data" ->{
                 data = nextData;
             }
-        }
+            "-in" -> {
+                inFilePath = nextData;
+            }
 
+            "-out" -> {
+                outFilePath = nextData;
+            }
+        }
     }
 
     if(mode == "enc"){
-        println(encrypt(data,key));
+        var ciphertext = "";
+        var plaintext = "";
+
+        if(inFilePath != "")
+        {
+            plaintext = File(inFilePath).readText();
+        }
+        else if(data != "")
+        {
+            plaintext = data;
+        }
+
+        ciphertext = encrypt(plaintext,key);
+
+        if(outFilePath != ""){
+            File(outFilePath).writeText(ciphertext);
+        }
+        else
+        {
+            println(ciphertext);
+        }
     }
     else
     {
-        println(decrypt(data,key));
+        var ciphertext = "";
+        var plaintext = "";
+
+        if(inFilePath != "")
+        {
+            ciphertext = File(inFilePath).readText();
+        }
+        else if(data != "")
+        {
+            ciphertext = data;
+        }
+
+        plaintext = decrypt(ciphertext,key);
+
+        if(outFilePath != ""){
+            File(outFilePath).writeText(plaintext);
+        }
+        else
+        {
+            println(plaintext);
+        }
     }
 }
